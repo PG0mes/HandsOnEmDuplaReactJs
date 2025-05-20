@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Curso ReactJS
 
 Este projeto contém o código-fonte e a documentação para um curso prático de ReactJS, onde desenvolvemos uma aplicação de loja virtual com várias funcionalidades modernas.
@@ -32,3 +33,7 @@ O curso está dividido em módulos sequenciais, cada um construindo sobre os con
 - React Query
 - Supabase
 - Bootstrap 5
+=======
+# HandsOnEmDuplaReactJs
+Atividade Avaliativa - Desenvolvimento Web
+>>>>>>> de4837087f3f6da09b82024f6d05768f4ed92e4d
