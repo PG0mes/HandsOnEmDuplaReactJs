@@ -52,6 +52,11 @@ const Header = ({ cartCount = 0 }) => {
               <NavLink className="nav-link" to="/products" end>
                 Produtos
               </NavLink>
+              {isAdmin && (
+                <NavLink className="nav-link" to="/admin/categories">
+                  Categorias
+                </NavLink>
+              )}
               <a className="nav-link" href="/about">Quem Somos</a>
               <a className="nav-link" href="/contact">Contato</a>
             </div>
@@ -75,6 +80,7 @@ const Header = ({ cartCount = 0 }) => {
                       <>
                         <li><Link className="dropdown-item" to="/admin/users">Usuários</Link></li>
                         <li><Link className="dropdown-item" to="/admin/products">Produtos</Link></li>
+                        <li><Link className="dropdown-item" to="/admin/categories">Categorias</Link></li>
                         <li><hr className="dropdown-divider" /></li>
                       </>
                     )}

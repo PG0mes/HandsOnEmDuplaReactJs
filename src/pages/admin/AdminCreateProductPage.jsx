@@ -1,9 +1,10 @@
 // src/pages/admin/AdminCreateProductPage.jsx
 import { useState, useEffect, useRef } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import productService from '@services/productService';
+import categoryService from '@services/categoryService';
 
 const AdminCreateProductPage = () => {
     const navigate = useNavigate();
@@ -17,10 +18,17 @@ const AdminCreateProductPage = () => {
         price: '',
         image_file: null,
         image_preview: '',
-        image_url: ''
+        image_url: '',
+        category_id: ''
     });
 
     const [errors, setErrors] = useState({});
+
+    // Buscar categorias
+    const { data: categories } = useQuery({
+        queryKey: ['categories'],
+        queryFn: categoryService.getCategories
+    });
 
     // Se for um produto para editar, inicializa o estado com os dados do produto
     useEffect(() => {
@@ -29,7 +37,8 @@ const AdminCreateProductPage = () => {
                 title: productToEdit.title,
                 description: productToEdit.description,
                 price: productToEdit.price,
-                image_url: productToEdit.image_url
+                image_url: productToEdit.image_url,
+                category_id: productToEdit.category?.id || ''
             });
         }
     }, [productToEdit]);
@@ -90,6 +99,9 @@ const AdminCreateProductPage = () => {
         if (!product.image_file && !product.image_url) {
             newErrors.image_file = 'Selecione uma foto';
         }
+        if (!product.category_id) {
+            newErrors.category_id = 'Selecione uma categoria';
+        }
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -105,6 +117,7 @@ const AdminCreateProductPage = () => {
             }
 
             const payload = { ...product, image_url: path, price: parseFloat(product.price) };
+            payload.category_id = parseInt(product.category_id, 10);
             delete payload.image_file;
             delete payload.image_preview;
 
@@ -160,6 +173,23 @@ const AdminCreateProductPage = () => {
                                     value={product.price}
                                     onChange={handleChange} />
                                 {errors.price && <div className="invalid-feedback">{errors.price}</div>}
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="category_id" className="form-label">Categoria</label>
+                                <select
+                                    className={`form-select ${errors.category_id ? 'is-invalid' : ''}`}
+                                    id="category_id"
+                                    name="category_id"
+                                    value={product.category_id}
+                                    onChange={handleChange}>
+                                    <option value="">Selecione uma categoria</option>
+                                    {categories?.map(category => (
+                                        <option key={category.id} value={category.id}>
+                                            {category.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.category_id && <div className="invalid-feedback">{errors.category_id}</div>}
                             </div>
                             <div className="mb-3">
                                 <label className="form-label">Foto do produto</label><br />

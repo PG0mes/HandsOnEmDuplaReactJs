@@ -7,7 +7,10 @@ const productService = {
     
     const { data, error, count } = await supabase
       .from('products')
-      .select('*', { count: 'exact' })
+      .select(`
+        *,
+        category:categories(id, name)
+      `)
       .range(from, to)
       .order('title', { ascending: true });
     if (error) {
@@ -24,7 +27,10 @@ const productService = {
   async getProductById(id) {
     const { data, error } = await supabase
       .from('products')
-      .select('*')
+      .select(`
+        *,
+        category:categories(id, name)
+      `)
       .eq('id', id)
       .single();
     if (error) {
@@ -38,7 +44,10 @@ const productService = {
     const { data, error } = await supabase
       .from('products')
       .insert([product])
-      .select();
+      .select(`
+        *,
+        category:categories(id, name)
+      `);
     if (error) {
       console.error('Erro ao criar produto:', error);
       throw error;
@@ -51,7 +60,10 @@ const productService = {
       .from('products')
       .update(product)
       .eq('id', id)
-      .select();
+      .select(`
+        *,
+        category:categories(id, name)
+      `);
     if (error) {
       console.error('Erro ao atualizar produto:', error);
       throw error;
@@ -69,6 +81,20 @@ const productService = {
       throw error;
     }
     return true;
+  },
+
+  async uploadImage(file) {
+    let image_url;
+    if (file) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${crypto.randomUUID()}.${fileExt}`;
+        const { error: upErr } = await supabase.storage
+            .from('product-images')
+            .upload(fileName, file);
+        if (upErr) throw upErr;
+        image_url = fileName;
+    }
+    return image_url;
   }
 };
 
