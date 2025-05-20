@@ -1,4 +1,4 @@
-const Card = ({ image, title, description, price, onAddToCartClick }) => {
+const Card = ({ image, title, description, price, category, onAddToCartClick }) => {
   // Função para formatar o preço em formato de moeda brasileira
   const formatPrice = (value) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -29,6 +29,9 @@ const Card = ({ image, title, description, price, onAddToCartClick }) => {
           <h5 className="card-title">{title}</h5>
           <p className="card-text flex-grow-1">{description}</p>
           <div className="mt-auto">
+            {category && (
+              <span className="badge bg-secondary mb-2">{category.name}</span>
+            )}
             <p className="card-text fw-bold text-primary fs-5 mb-2">
               {formatPrice(price)}
             </p>
